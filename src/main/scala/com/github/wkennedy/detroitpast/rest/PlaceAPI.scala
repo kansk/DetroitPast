@@ -31,7 +31,7 @@ object PlaceAPI extends RestHelper {
     case "id" :: placeId :: Nil JsonDelete _ =>
         "Successfully deleted" + placeId : JValue
 
-    // curl -H "Accept: application/example.v1" -H 'Content-type: text/json' http://127.0.0.1:8080/api/places
+    // curl -H 'Accept: application/json;version=1' -H 'Content-type: text/json' http://127.0.0.1:8080/api/places
     case Nil JsonGet _ =>
       PlaceRecord.findAll: JValue
 
