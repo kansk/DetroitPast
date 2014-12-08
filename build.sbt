@@ -10,7 +10,7 @@ resolvers ++= Seq(
   "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
 )
 
-tomcat()
+jetty()
 
 parallelExecution in Test := false
 
