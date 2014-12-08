@@ -1,10 +1,9 @@
 package com.github.wkennedy.detroitpast.rest
 
 import com.foursquare.rogue.LatLong
-import com.github.wkennedy.detroitpast.models.Place
-import com.github.wkennedy.detroitpast.record.PlaceRecord
+import com.github.wkennedy.detroitpast.record.{Place, PlaceRecord}
+import net.liftweb.http.LiftRules
 import net.liftweb.http.rest.RestHelper
-import net.liftweb.http.{S, LiftRules}
 import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
 
@@ -37,11 +36,14 @@ object PlaceAPI extends RestHelper {
 
     //curl -d '{"name":"McDonalds","year":1965,"additionalInformation":{"architect":"Ronald McDonald"},"lat":32.36,"long":-93.077}' -X POST -H 'Content-type: application/json' http://127.0.0.1:8080/api/places
     case Nil JsonPost json -> request =>
-      println(json)
       val place = json.extract[Place]
       val placeRecord = PlaceRecord.createRecord.name(place.name).year(place.year).loc(LatLong(place.lat, place.long))
         .additionalInformation(place.additionalInformation).save(safe = true)
       placeRecord: JValue
+
+    case _ Options req =>
+      println("In OPTIONS")
+      "200": JValue
   })
 
 }

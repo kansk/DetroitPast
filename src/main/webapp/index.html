@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+    <link rel="stylesheet" href="css/foundation.css">
+
+    <!-- This is how you would link your custom stylesheet -->
+    <link rel="stylesheet" href="css/app.css">
+
+    <script src="js/vendor/modernizr.js"></script>
+</head>
+
+<body ng-app="">
+
+<div ng-controller="customersController">
+    <ul>
+        <li ng-repeat="x in places">
+            {{ x.name + ', ' + x.year }}
+        </li>
+    </ul>
+</div>
+
+<div ng-controller="formController">
+    <form novalidate>
+        Name: <br/><input type="text" ng-model="place.name"> <br/><br/>
+        Year: <br/><input type="number" ng-model="place.year"> <br/><br/>
+        Latitude: <br/><input type="text" ng-model="place.lat"> <br/><br/>
+        Longitude: <br/><input type="text" ng-model="place.long"> <br/><br/>
+        <br/><br/>
+        <input type="submit" ng-click="submitForm()">
+    </form>
+</div>
+<br/>
+
+</body>
+</html>
+<script>
+
+    var config = {
+        headers: {
+            'Accept': 'application/json;version=1',
+            'Content-Type': 'application/json'
+        }
+    };
+
+    function customersController($scope, $http) {
+        $http.get("http://127.0.0.1/api/places", config)
+                .success(function (response) {
+                    $scope.places = response;
+                });
+    }
+
+    function formController($scope, $http) {
+
+//      {"name":"McDonalds","year":1965,"additionalInformation":{"architect":"Ronald McDonald"},"lat":32.36,"long":-93.077}
+//        $scope.place = {
+//            name: "default",
+//            year: 1916,
+//            additionalInformation: {},
+//            lat: 34.25,
+//            long: -53.15
+//        };
+
+        $scope.submitForm = function () {
+            console.log("posting data....");
+            console.log(JSON.stringify($scope.place));
+
+            $http.post('http://127.0.0.1/api/places', JSON.stringify($scope.place), config).success(function (data, status, headers, config) {
+            }).error(function (data, status, headers, config) {
+                alert('Error: ' + status + ' ' + data);
+            });
+        };
+    }
+</script>
