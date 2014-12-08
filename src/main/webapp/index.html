@@ -3,39 +3,51 @@
 
 <head>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
-    <link rel="stylesheet" href="css/foundation.css">
-
-    <!-- This is how you would link your custom stylesheet -->
-    <link rel="stylesheet" href="css/app.css">
-
-    <script src="js/vendor/modernizr.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap-tpls.min.js"></script>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
 </head>
 
 <body ng-app="">
 
-<div ng-controller="customersController">
-    <ul>
-        <li ng-repeat="x in places">
-            {{ x.name + ', ' + x.year }}
-        </li>
-    </ul>
-</div>
+<div class="container">
 
-<div ng-controller="formController">
-    <form novalidate>
-        Name: <br/><input type="text" ng-model="place.name"> <br/><br/>
-        Year: <br/><input type="number" ng-model="place.year"> <br/><br/>
-        Latitude: <br/><input type="text" ng-model="place.lat"> <br/><br/>
-        Longitude: <br/><input type="text" ng-model="place.long"> <br/><br/>
-        <br/><br/>
-        <input type="submit" ng-click="submitForm()">
-    </form>
+    <div class="row">
+        <div ng-controller="customersController">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Year</th>
+                </tr>
+                </thead>
+                <tr ng-repeat="x in places">
+                    <td>{{x.name}}</td>
+                    <td>{{x.year}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div ng-controller="formController">
+            <form novalidate>
+                Name: <br/><input type="text" ng-model="place.name"> <br/><br/>
+                Year: <br/><input type="number" ng-model="place.year"> <br/><br/>
+                Latitude: <br/><input type="text" ng-model="place.lat"> <br/><br/>
+                Longitude: <br/><input type="text" ng-model="place.long"> <br/><br/>
+                <br/><br/>
+                <input type="submit" class="btn btn-primary" ng-click="submitForm()">
+            </form>
+        </div>
+    </div>
+
 </div>
-<br/>
 
 </body>
 </html>
 <script>
+    angular.module('myModule', ['ui.bootstrap']);
 
     var config = {
         headers: {
