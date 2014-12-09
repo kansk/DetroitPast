@@ -14,7 +14,7 @@ object VersionHelper extends RestHelper {
     LiftRules.statelessDispatch.append(VersionHelper)
 
     LiftRules.statelessRewrite.prepend {
-      case RewriteRequest(ParsePath(path, _, _, _), _, req) if !path(1).startsWith("v") =>
+      case RewriteRequest(ParsePath(path, _, _, _), _, req) if path.isDefinedAt(1) && !path(1).startsWith("v") =>
         req match {
           case request: HTTPRequest =>
             val version = request.header("Accept").openOr("application/json;version=1")

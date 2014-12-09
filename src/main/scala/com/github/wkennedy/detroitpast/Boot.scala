@@ -3,6 +3,7 @@ package com.github.wkennedy.detroitpast
 import com.github.wkennedy.detroitpast.rest.{VersionHelper, PlaceAPI}
 import com.mongodb.{MongoClient, ServerAddress}
 import net.liftweb.http._
+import net.liftweb.http.js.yui.YUIArtifacts
 import net.liftweb.http.provider.HTTPParam
 import net.liftweb.mongodb.MongoDB
 import net.liftweb.sitemap._
@@ -16,19 +17,6 @@ class Boot extends Bootable {
   def boot() {
 
     connectDB()
-
-    // where to search snippet
-    LiftRules.addToPackages("code")
-
-    // Build SiteMap
-    val entries = List(
-      Menu.i("Home") / "index",
-      Menu.i("Watch some videos") / "videos"
-    )
-
-    // set the sitemap.  Note if you don't want access control for
-    // each page, just comment this line out.
-    LiftRules.setSiteMap(SiteMap(entries: _*))
 
     // Force the request to be UTF-8
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
