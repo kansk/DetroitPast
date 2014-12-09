@@ -24,3 +24,5 @@ DetroitPastApp.config(['$routeProvider',
                 redirectTo: '/phones'
             });
 }]);
+
+var apiURL = "http://localhost:8080";
