@@ -37,8 +37,7 @@ object PlaceAPI extends RestHelper {
     //curl -d '{"name":"McDonalds","year":1965,"additionalInformation":{"architect":"Ronald McDonald"},"lat":32.36,"long":-93.077}' -X POST -H 'Content-type: application/json' http://127.0.0.1:8080/api/places
     case Nil JsonPost json -> request =>
       val place = json.extract[Place]
-      val placeRecord = PlaceRecord.createRecord.name(place.name).year(place.year).loc(LatLong(place.lat, place.long))
-        .additionalInformation(place.additionalInformation).save(safe = true)
+      val placeRecord = PlaceRecord.createRecord.name(place.name).year(place.year).loc(LatLong(place.lat, place.long)).additionalInformation(place.additionalInformation).save(safe = true)
       placeRecord: JValue
 
     case _ Options req =>
