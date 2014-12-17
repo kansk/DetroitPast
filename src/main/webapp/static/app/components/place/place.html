@@ -9,23 +9,39 @@
                 <th>Longitude</th>
             </tr>
             </thead>
-            <tr ng-repeat="x in places">
-                <td>{{x.name}}</td>
-                <td>{{x.year}}</td>
-                <td>{{x.loc.lat}}</td>
-                <td>{{x.loc.long}}</td>
+            <tr ng-repeat="place in places">
+                <td>{{place.name}}</td>
+                <td>{{place.year}}</td>
+                <td>{{place.loc.lat}}</td>
+                <td>{{place.loc.long}}</td>
             </tr>
         </table>
     </div>
 
     <div class="row">
-        <form novalidate>
-            Name: <br/><input type="text" ng-model="place.name"> <br/><br/>
-            Year: <br/><input type="number" ng-model="place.year"> <br/><br/>
-            Latitude: <br/><input type="number" ng-model="place.lat"> <br/><br/>
-            Longitude: <br/><input type="number" ng-model="place.long"> <br/><br/>
-            <br/><br/>
-            <input type="submit" class="btn btn-primary" ng-click="savePlace(place)">
+        <form novalidate role="form">
+            <div class="form-group">
+                <label for="placeName">Name</label>
+                <input id="placeName" type="text" ng-model="place.name">
+            </div>
+            <div class="form-group">
+                <label for="placeYear">Year</label>
+                <input id="placeYear" type="number" ng-model="place.year">
+            </div>
+            <div class="form-group">
+                <label for="placeLatitude">Latitude</label>
+                <input id="placeLatitude" type="number" ng-model="place.lat">
+            </div>
+            <div class="form-group">
+                <label for="placeLongitude">Longitude</label>
+                <input id="placeLongitude" type="number" ng-model="place.long">
+            </div>
+            <!--<div class="form-group" data-ng-repeat="additionalInformation in place">-->
+                <!--<label for="additionalInformation">Additional Information</label>-->
+                <!--<button ng-show="showAddChoice(choice)" ng-click="addAdditionalInformation()">Add more information</button>-->
+                <!--<input type="text" ng-model="choice.name" name="" placeholder="Enter a restaurant name">-->
+            <!--</div>-->
+            <input id="placeSubmit" type="submit" class="btn btn-default btn-primary" ng-click="savePlace(place)">
         </form>
     </div>
 </div>

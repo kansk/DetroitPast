@@ -24,7 +24,7 @@ object UserRecord extends UserRecord with MongoMetaRecord[UserRecord] {
   implicit def toJson(users: Seq[UserRecord]): JValue = users map { _.asJValue }
 }
 
-case class User(firstName: String, lastName: String, email: String, password: String, role: String) extends JsonObject[User] {
+case class User(firstName: Option[String], lastName: Option[String], email: String, password: String, role: Option[String]) extends JsonObject[User] {
   def meta = User
 }
 

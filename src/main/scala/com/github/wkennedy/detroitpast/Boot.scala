@@ -2,7 +2,7 @@ package com.github.wkennedy.detroitpast
 
 import com.github.wkennedy.detroitpast.model.Role
 import com.github.wkennedy.detroitpast.record.UserRecord
-import com.github.wkennedy.detroitpast.rest.{VersionHelper, PlaceAPI}
+import com.github.wkennedy.detroitpast.rest.{UserAPI, VersionHelper, PlaceAPI}
 import com.mongodb.{MongoClient, ServerAddress}
 import net.liftweb.common.Full
 import net.liftweb.http._
@@ -22,6 +22,7 @@ class Boot extends Bootable {
 
     connectDB()
 
+    // Todo: create default admin
     // UserRecord.createRecord.firstName("John").lastName("Doe").email("john.doe@yahoo.com").password("test1234").role(Role.admin.toString).save(safe = true)
 
     // Force the request to be UTF-8
@@ -33,23 +34,24 @@ class Boot extends Bootable {
           AuthRole(Role.editor.toString).addRoles(
             AuthRole(Role.user.toString))))
 
-    LiftRules.httpAuthProtectedResource.prepend {
-      case Req("api" :: Nil, _, _) => roles.getRoleByName(Role.user.toString)
-      case Req("api" :: _, _, _) => roles.getRoleByName(Role.user.toString)
-    }
-
-    LiftRules.authentication = HttpBasicAuthentication("DetroitPast") {
-      case (userEmail, userPass, _) =>
-        UserRecord.find("email", userEmail).map {
-          userRecord =>
-            if (userRecord.password.match_?(userPass)) {
-              userRoles(AuthRole(userRecord.role.get))
-              true
-            } else {
-              false
-            }
-        } openOr false
-    }
+    //TODO finish URL security mapping
+//    LiftRules.httpAuthProtectedResource.prepend {
+//      case Req("api" :: Nil, _, _) => roles.getRoleByName(Role.user.toString)
+//      case Req("api" :: _, _, _) => roles.getRoleByName(Role.user.toString)
+//    }
+//
+//    LiftRules.authentication = HttpBasicAuthentication("DetroitPast") {
+//      case (userEmail, userPass, _) =>
+//        UserRecord.find("email", userEmail).map {
+//          userRecord =>
+//            if (userRecord.password.match_?(userPass)) {
+//              userRoles(AuthRole(userRecord.role.get))
+//              true
+//            } else {
+//              false
+//            }
+//        } openOr false
+//    }
 
     LiftRules.supplementalHeaders.default.set(
       List(("X-Lift-Version", LiftRules.liftVersion),
@@ -61,6 +63,7 @@ class Boot extends Bootable {
 
     VersionHelper.init()
     PlaceAPI.init()
+    UserAPI.init()
   }
 
   def connectDB(): Unit = {

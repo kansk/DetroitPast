@@ -13,7 +13,7 @@ placeServices.factory('placeService', ['$http', '$q',
             },
 
             save: function (place) {
-                return $http.post(apiURL + 'api/places', JSON.stringify(place), config)
+                return $http.post(apiURL + '/api/places', JSON.stringify(place), config)
                     .then(function (response) {
                         return response.data
                     });

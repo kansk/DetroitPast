@@ -17,13 +17,13 @@ object VersionHelper extends RestHelper {
       case RewriteRequest(ParsePath(path, _, _, _), _, req) if path.isDefinedAt(1) && !path(1).startsWith("v") =>
         req match {
           case request: HTTPRequest =>
-            val version = request.header("Accept").openOr("application/json;version=1")
-            val index = version.lastIndexOf("version=")
-            var versionNumber = "v1"
+            val acceptType = request.header("Accept").openOr("application/json;version=1");println(acceptType)
+            val index = acceptType.lastIndexOf("version=")
+            var versionNumber = "v1";println(index);println(versionNumber)
             if(index != -1) {
-              versionNumber = version.slice(index + 8, version.length)
+              versionNumber = "v" + acceptType.slice(index + 8, acceptType.length);println(versionNumber)
             }
-            val newPath = insertAt("v" + versionNumber, 1, path)
+            val newPath = insertAt(versionNumber, 1, path);println(newPath)
             RewriteResponse(newPath)
         }
       }

@@ -3,7 +3,9 @@
 var DetroitPastApp = angular.module('DetroitPastApp', [
     'ngRoute',
     'placeControllers',
-    'placeServices'
+    'placeServices',
+    'userControllers',
+    'userServices'
 ]);
 
 var config = {
@@ -20,8 +22,12 @@ DetroitPastApp.config(['$routeProvider',
                 templateUrl: 'app/components/place/place.html',
                 controller: 'PlaceCtrl'
             }).
+            when('/register', {
+                templateUrl: 'app/components/user/user.html',
+                controller: 'UserCtrl'
+            }).
             otherwise({
-                redirectTo: '/phones'
+                redirectTo: '/'
             });
 }]);
 
