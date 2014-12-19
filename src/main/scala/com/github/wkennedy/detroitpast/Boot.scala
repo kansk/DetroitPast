@@ -1,19 +1,17 @@
 package com.github.wkennedy.detroitpast
 
 import com.github.wkennedy.detroitpast.model.Role
+import com.github.wkennedy.detroitpast.model.Role.rolesHierarchy
 import com.github.wkennedy.detroitpast.record.UserRecord
 import com.github.wkennedy.detroitpast.rest.{UserAPI, VersionHelper, PlaceAPI}
 import com.mongodb.{MongoClient, ServerAddress}
-import net.liftweb.common.Full
+import net.liftweb.common.{Full, Loggable, Empty}
 import net.liftweb.http._
 import net.liftweb.http.auth.{userRoles, AuthRole, HttpBasicAuthentication}
-import net.liftweb.http.js.yui.YUIArtifacts
-import net.liftweb.http.provider.HTTPParam
 import net.liftweb.mongodb.MongoDB
-import net.liftweb.sitemap._
 import net.liftweb.util.DefaultConnectionIdentifier
 
-class Boot extends Bootable {
+class Boot extends Bootable with Loggable {
 
   System.setProperty("DEBUG.MONGO", "true")
   System.setProperty("DB.TRACE", "true")
@@ -23,35 +21,10 @@ class Boot extends Bootable {
     connectDB()
 
     // Todo: create default admin
-    // UserRecord.createRecord.firstName("John").lastName("Doe").email("john.doe@yahoo.com").password("test1234").role(Role.admin.toString).save(safe = true)
+    UserRecord.createRecord.firstName("Test").lastName("Guy3").email("testguy3@yahoo.com").password("test1234").role(Role.admin.toString).save(safe = true)
 
     // Force the request to be UTF-8
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
-
-    val roles =
-      AuthRole(Role.admin.toString).addRoles(
-        AuthRole(Role.site_admin.toString).addRoles(
-          AuthRole(Role.editor.toString).addRoles(
-            AuthRole(Role.user.toString))))
-
-    //TODO finish URL security mapping
-//    LiftRules.httpAuthProtectedResource.prepend {
-//      case Req("api" :: Nil, _, _) => roles.getRoleByName(Role.user.toString)
-//      case Req("api" :: _, _, _) => roles.getRoleByName(Role.user.toString)
-//    }
-//
-//    LiftRules.authentication = HttpBasicAuthentication("DetroitPast") {
-//      case (userEmail, userPass, _) =>
-//        UserRecord.find("email", userEmail).map {
-//          userRecord =>
-//            if (userRecord.password.match_?(userPass)) {
-//              userRoles(AuthRole(userRecord.role.get))
-//              true
-//            } else {
-//              false
-//            }
-//        } openOr false
-//    }
 
     LiftRules.supplementalHeaders.default.set(
       List(("X-Lift-Version", LiftRules.liftVersion),
@@ -61,9 +34,38 @@ class Boot extends Bootable {
         ("Access-Control-Allow-Headers", "Cookie, Host, X-Forwarded-For, Accept-Charset, If-Modified-Since, Accept-Language, X-Forwarded-Port, Connection, X-Forwarded-Proto, User-Agent, Referer, Accept-Encoding, X-Requested-With, Authorization, Accept, Content-Type")
       ))
 
+    //TODO finish URL security mapping
+    def protection: LiftRules.HttpAuthProtectedResourcePF = {
+      case Req("api" :: "v1" :: "users" :: Nil, _, _) => rolesHierarchy.getRoleByName(Role.site_admin.toString)
+      case Req("api" :: "v1" :: "places" :: Nil, _, PostRequest) => rolesHierarchy.getRoleByName(Role.user.toString)
+    }
+
+    LiftRules.httpAuthProtectedResource.append {
+      protection
+    }
+
+    //TODO bad password results in a S.? issue in Boot
+    LiftRules.authentication = HttpBasicAuthentication("DetroitPast") {
+      case (userEmail, userPass, _) =>
+        logger.debug("Attempting to authenticate: " + userEmail)
+        UserRecord.find("email", userEmail).map {
+          userRecord =>
+            if (userRecord.password.match_?(userPass)) {
+              userRoles(AuthRole(userRecord.role.get))
+              logger.debug("User: " + userEmail + " IS authenticated")
+              true
+            } else {
+              logger.debug("User NOT authenticated")
+              false
+            }
+        } openOr
+          logger.debug("No user record found.  User NOT authenticated.")
+        false
+    }
+
     VersionHelper.init()
-    PlaceAPI.init()
     UserAPI.init()
+    PlaceAPI.init()
   }
 
   def connectDB(): Unit = {

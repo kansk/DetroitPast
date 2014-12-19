@@ -1,12 +1,15 @@
 package com.github.wkennedy.detroitpast.record
 
+import net.liftweb.common.Loggable
 import net.liftweb.json._
 import net.liftweb.mongodb.{JsonObject, JsonObjectMeta}
 import net.liftweb.mongodb.record.{MongoMetaRecord, MongoRecord}
 import net.liftweb.mongodb.record.field.ObjectIdPk
 import net.liftweb.record.field.{PasswordField, EmailField, StringField}
 
-class UserRecord private() extends MongoRecord[UserRecord] with ObjectIdPk[UserRecord] {
+import scala.language.implicitConversions
+
+class UserRecord private() extends MongoRecord[UserRecord] with ObjectIdPk[UserRecord] with Loggable {
   def meta = UserRecord
   object firstName extends StringField(this, 1024)
   object lastName extends StringField(this, 1024)

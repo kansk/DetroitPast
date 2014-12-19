@@ -1,5 +1,7 @@
 package com.github.wkennedy.detroitpast.model
 
+import net.liftweb.http.auth.AuthRole
+
 object Role extends Enumeration {
   type Role = Value
   /*
@@ -13,4 +15,10 @@ object Role extends Enumeration {
   User roles
    */
   val user = Value("user")
+
+  val rolesHierarchy =
+    AuthRole(Role.admin.toString).addRoles(
+      AuthRole(Role.site_admin.toString).addRoles(
+        AuthRole(Role.editor.toString).addRoles(
+          AuthRole(Role.user.toString))))
 }
