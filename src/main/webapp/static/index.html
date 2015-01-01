@@ -32,8 +32,9 @@
 
 <body>
 
-<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    <div class="container">
+<div class="container">
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
                     aria-expanded="false" aria-controls="navbar">
@@ -54,12 +55,13 @@
     </div>
 </nav>
 
-<div class="container">
+<div>
+    <div >
+        <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="alert.close()"><span ng-bind-html="alert.msg"></span></alert>
+    </div>
+
     <div ng-view></div>
 </div>
-
-<!--TODO: Add to header-->
-<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="alert.close()"><span ng-bind-html="alert.msg"></span></alert>
-
+</div>
 </body>
 </html>
