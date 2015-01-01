@@ -21,7 +21,7 @@ class Boot extends Bootable with Loggable {
     connectDB()
 
     // Todo: create default admin
-    UserRecord.createRecord.firstName("Test").lastName("Guy3").email("testguy3@yahoo.com").password("test1234").role(Role.admin.toString).save(safe = true)
+    //UserRecord.createRecord.firstName("Test").lastName("Guy3").email("testguy3@yahoo.com").password("test1234").role(Role.admin.toString).save(safe = true)
 
     // Force the request to be UTF-8
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))

@@ -21,6 +21,7 @@ libraryDependencies ++= {
   Seq(
     "net.liftweb"     %% "lift-webkit"            % liftVersion withJavadoc() withSources(),
     "net.liftweb" %% "lift-mongodb-record" % liftVersion,
+    "com.wix" %% "accord-core" % "0.4.1",
     "com.foursquare" % "rogue-field_2.11"         % "2.4.0" intransitive(),
     "com.foursquare" % "rogue-core_2.11"          % "2.4.0" intransitive(),
     "com.foursquare" % "rogue-lift_2.11" % "2.4.0" intransitive(),

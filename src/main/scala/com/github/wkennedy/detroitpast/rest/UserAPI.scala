@@ -2,7 +2,8 @@ package com.github.wkennedy.detroitpast.rest
 
 import com.github.wkennedy.detroitpast.model.Role
 import com.github.wkennedy.detroitpast.record.{User, UserRecord}
-import net.liftweb.common.Loggable
+import com.wix.accord._
+import net.liftweb.common._
 import net.liftweb.http.LiftRules
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.json.JsonAST._
@@ -26,12 +27,19 @@ object UserAPI extends RestHelper with Loggable {
       "200": JValue
   })
 
-  //TODO add validation
   serve("api" / "v1" / "users" / "register" prefix {
     case Nil JsonPost json -> request =>
       val user = json.extract[User]
-      val userRecord = UserRecord.createRecord.firstName(user.firstName).lastName(user.lastName).password(user.password).email(user.email).role(Role.user.toString).save(safe = true)
-      userRecord: JValue
+      (validate(user) match {
+        case com.wix.accord.Failure(rules) =>
+          val violationMessages = for (ruleViolation <- rules) yield ruleViolation.description.getOrElse("Unknown Validation Error")
+          ParamFailure(violationMessages mkString "/",
+            Empty, Empty, 500)
+        case Success => val userRecord: JValue = UserRecord.createRecord
+          .firstName(user.firstName).lastName(user.lastName).password(user.password).email(user.email).role(Role.user.toString).apiKey(UserRecord.uuid)
+          .save(safe = true)
+          Full(userRecord)
+      }): Box[JValue]
 
     case _ Options req =>
       "200": JValue
