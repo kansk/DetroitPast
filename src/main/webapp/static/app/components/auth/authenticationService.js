@@ -2,12 +2,17 @@
 
 var authenticationServices = angular.module('authenticationServices', ['ngResource']);
 
-authenticationServices.factory('authenticationService', ['$http', '$cookieStore', '$rootScope', '$timeout',
-    function ($http, $cookieStore, $rootScope, $timeout) {
+authenticationServices.factory('authenticationService', ['$http', '$cookieStore', '$rootScope', '$timeout', '$location',
+    function ($http, $cookieStore, $rootScope, $timeout, $location) {
         var service = {};
         var authUrl = apiURL;
         service.isAuthenticated = function () {
             return $rootScope.globals.currentUser != undefined
+        };
+        service.getUserName = function () {
+            if(this.isAuthenticated()) {
+                return $rootScope.globals.currentUser.username;
+            }
         };
         service.Login = function (username, password, callback) {
 
@@ -31,6 +36,11 @@ authenticationServices.factory('authenticationService', ['$http', '$cookieStore'
                     callback(true);
                 });
 
+        };
+
+        service.logout = function() {
+            this.ClearCredentials();
+            $location.path('/login');
         };
 
         service.SetCredentials = function (username, password) {
