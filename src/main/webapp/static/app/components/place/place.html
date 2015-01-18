@@ -18,7 +18,7 @@
         </table>
     </div>
 
-    <div >
+    <div ng-show="{{authService.isAuthenticated()}}">
         <form novalidate role="form">
             <div class="form-group">
                 <label for="placeName">Name</label>

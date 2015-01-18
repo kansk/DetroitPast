@@ -25,6 +25,12 @@ object UserAPI extends RestHelper with Loggable {
 
     case _ Options req =>
       "200": JValue
+
+    case "authenticate" :: Nil Options req =>
+      "200": JValue
+
+    case "authenticate" :: Nil Post _ =>
+      "true": JValue
   })
 
   serve("api" / "v1" / "users" / "register" prefix {

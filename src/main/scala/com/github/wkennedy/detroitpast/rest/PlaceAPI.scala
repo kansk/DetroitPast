@@ -44,7 +44,6 @@ object PlaceAPI extends RestHelper {
       placeRecord: JValue
 
     case _ Options req =>
-      println("In OPTIONS")
       "200": JValue
   })
 

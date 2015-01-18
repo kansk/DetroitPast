@@ -3,6 +3,9 @@
 var DetroitPastApp = angular.module('DetroitPastApp', [
     'ui.bootstrap',
     'ngRoute',
+    'ngCookies',
+    'loginControllers',
+    'authenticationServices',
     'placeControllers',
     'placeServices',
     'userControllers',
@@ -20,7 +23,16 @@ var config = {
 
 DetroitPastApp.config(['$routeProvider',
     function ($routeProvider) {
-        $routeProvider.
+        $routeProvider
+            .when('/login', {
+                templateUrl: 'app/components/auth/login.html',
+                controller: 'LoginCtrl',
+                hideMenus: true
+            })
+            .when('/', {
+                templateUrl: 'app/components/place/place.html',
+                controller: 'PlaceCtrl'
+            }).
             when('/places', {
                 templateUrl: 'app/components/place/place.html',
                 controller: 'PlaceCtrl'
@@ -30,9 +42,27 @@ DetroitPastApp.config(['$routeProvider',
                 controller: 'UserCtrl'
             }).
             otherwise({
-                redirectTo: '/'
+                redirectTo: '/login'
             });
-}]);
+}])
+    .run(['$rootScope', '$location', '$cookieStore', '$http', 'authenticationService',
+        function ($rootScope, $location, $cookieStore, $http, authenticationService) {
+            // keep user logged in after page refresh
+            $rootScope.globals = $cookieStore.get('globals') || {};
+            if ($rootScope.globals.currentUser) {
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
+            }
+
+            $rootScope.authService = authenticationService;
+
+            //$rootScope.$on('$locationChangeStart', function (event, next, current) {
+            //    // redirect to login page if not logged in
+            //    console.log("path: " + $location.path());
+            //    if ($location.path() !== '/login' && !$rootScope.globals.currentUser) {
+            //        $location.path('/login');
+            //    }
+            //});
+        }]);
 
 DetroitPastApp.factory('requestResponseInterceptor', function ($q, $injector) {
     return {

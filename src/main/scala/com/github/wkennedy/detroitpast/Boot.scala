@@ -36,7 +36,7 @@ class Boot extends Bootable with Loggable {
 
     //TODO finish URL security mapping
     def protection: LiftRules.HttpAuthProtectedResourcePF = {
-      case Req("api" :: "v1" :: "users" :: Nil, _, _) => rolesHierarchy.getRoleByName(Role.site_admin.toString)
+//      case Req("api" :: "v1" :: "users" :: "authenticate" :: Nil, _, PostRequest) => rolesHierarchy.getRoleByName(Role.user.toString)
       case Req("api" :: "v1" :: "places" :: Nil, _, PostRequest) => rolesHierarchy.getRoleByName(Role.user.toString)
     }
 
